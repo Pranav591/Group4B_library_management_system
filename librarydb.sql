@@ -2,9 +2,9 @@ DROP DATABASE IF EXISTS librarydb;
 CREATE DATABASE librarydb;
 USE librarydb;
 
--- -----------------------------------------------------
+-------------------------------------------------------
 -- Table: account
--- -----------------------------------------------------
+-------------------------------------------------------
 CREATE TABLE account (
   username VARCHAR(15) NOT NULL PRIMARY KEY,
   name VARCHAR(25) NOT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE returntbl (
 -- -----------------------------------------------------
 -- Sample Data
 -- -----------------------------------------------------
-INSERT INTO student (name, fathers_name, course, branch, year, semister)
+INSERT INTO student (name, father_name, course, branch, year, semister)
 VALUES ('Adrian', 'Arnulfo', 'BBA', 'Bear Branch', '4th', '2nd');
 
 INSERT INTO book (name, edition, publisher, price, stock)
