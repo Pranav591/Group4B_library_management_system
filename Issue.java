@@ -225,3 +225,27 @@ public class Issue extends JFrame {
             }
         });
 
+        add(lblBookId); add(txtBookId);
+        add(lblBookName); add(txtBookName);
+        add(lblPublisher); add(txtPublisher);
+        add(lblStock); add(txtStock);
+        add(btnSearchBook); add(new JLabel());
+        add(lblStudentId); add(txtStudentId);
+        add(lblStudentName); add(txtStudentName);
+        add(lblCourse); add(txtCourse);
+        add(btnSearchStudent); add(new JLabel());
+        add(btnIssue);
+    }
+
+    // Main Method
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new Issue().setVisible(true));
+    }
+
+    // Constructor
+    public Issue() {
+        initComponents();
+        setLocationRelativeTo(null);
+    }
+}
+
