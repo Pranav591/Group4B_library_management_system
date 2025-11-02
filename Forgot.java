@@ -37,113 +37,54 @@
             return password; 
         }
 }
-    @SuppressWarnings("unchecked")
-    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
-    private void initComponents() {
+    // Database Helper (for connecting to MySQL)
+// ------------------------------------------------------------
+class DatabaseHelper {
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/librarydb";
+    private static final String USER = "root";
+    private static final String PASSWORD = "";
 
-        jPanel1 = new javax.swing.JPanel();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
-        txtuname = new javax.swing.JTextField();
-        txtpassword = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        txtname = new javax.swing.JTextField();
-        txtsques = new javax.swing.JTextField();
-        btnretrive = new javax.swing.JButton();
-        txtanswer = new javax.swing.JTextField();
-        btnsearch = new javax.swing.JButton();
-        btnback = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel5 = new javax.swing.JLabel();
+    public static Connection getConnection() {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            return DriverManager.getConnection(URL, USER, PASSWORD);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+}
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Forgot Password");
+// ------------------------------------------------------------
+// DAO Class (Handles Database Queries)
+// ------------------------------------------------------------
+class AccountDAO {
+    private final Connection con;
 
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Forgot Password", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 1, 18), new java.awt.Color(255, 0, 0))); // NOI18N
+    public AccountDAO() {
+        con = DatabaseHelper.getConnection();
+    }
 
-        jLabel3.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel3.setText("Your Security Question");
-
-        jLabel4.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel4.setText("Answer");
-
-        txtuname.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-
-        txtpassword.setEditable(false);
-        txtpassword.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-
-        jLabel2.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel2.setText("Name");
-
-        txtname.setEditable(false);
-        txtname.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-
-        txtsques.setEditable(false);
-        txtsques.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-
-        btnretrive.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnretrive.setText("Retrive");
-        btnretrive.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnretriveActionPerformed(evt);
+    // Find user by username
+    public Account findByUsername(String username) {
+        String query = "SELECT * FROM account WHERE username = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return new Account(
+                        rs.getString("username"),
+                        rs.getString("name"),
+                        rs.getString("security_question"),
+                        rs.getString("answer"),
+                        rs.getString("password")
+                );
             }
-        });
-
-        txtanswer.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-
-        btnsearch.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnsearch.setText("Search");
-        btnsearch.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnsearchActionPerformed(evt);
-            }
-        });
-
-        btnback.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        btnback.setText("Back");
-        btnback.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnbackActionPerformed(evt);
-            }
-        });
-
-        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel1.setText("Username");
-
-        jLabel5.setFont(new java.awt.Font("Tahoma", 1, 11)); // NOI18N
-        jLabel5.setText("Your Password");
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4)
-                            .addComponent(jLabel5))
-                        .addGap(9, 9, 9)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtanswer, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtsques, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1)
-                            .addComponent(jLabel2))
-                        .addGap(80, 80, 80)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtuname, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, 140, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(btnretrive, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnsearch)
-                    .addComponent(btnback, javax.swing.GroupLayout.PREFERRED_SIZE, 75, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
