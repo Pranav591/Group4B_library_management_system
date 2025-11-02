@@ -154,3 +154,74 @@ public class Issue extends JFrame {
             JOptionPane.showMessageDialog(this, "Database error: " + e.getMessage());
         }
     }
+    // ------------------------------
+    // GUI + Button Actions
+    // ------------------------------
+    private JTextField txtBookId, txtBookName, txtPublisher, txtStock;
+    private JTextField txtStudentId, txtStudentName, txtCourse;
+
+    private void initComponents() {
+        setTitle("📚 Issue Book");
+        setSize(450, 400);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLayout(new GridLayout(10, 2, 5, 5));
+
+        JLabel lblBookId = new JLabel("Book ID:");
+        JLabel lblBookName = new JLabel("Book Name:");
+        JLabel lblPublisher = new JLabel("Publisher:");
+        JLabel lblStock = new JLabel("Stock:");
+        JLabel lblStudentId = new JLabel("Student ID:");
+        JLabel lblStudentName = new JLabel("Student Name:");
+        JLabel lblCourse = new JLabel("Course:");
+
+        txtBookId = new JTextField();
+              txtBookName = new JTextField();
+        txtPublisher = new JTextField();
+        txtStock = new JTextField();
+        txtStudentId = new JTextField();
+        txtStudentName = new JTextField();
+        txtCourse = new JTextField();
+
+        JButton btnSearchBook = new JButton("🔍 Search Book");
+        JButton btnSearchStudent = new JButton("🔍 Search Student");
+        JButton btnIssue = new JButton("✅ Issue Book");
+
+        btnSearchBook.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtBookId.getText());
+                Book b = getBook(id);
+                if (b != null) {
+                    txtBookName.setText(b.getName());
+                    txtPublisher.setText(b.getPublisher());
+                    txtStock.setText(String.valueOf(b.getStock()));
+                } else JOptionPane.showMessageDialog(this, "Book not found!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Enter valid Book ID!");
+            }
+        });
+
+        btnSearchStudent.addActionListener(e -> {
+            try {
+                int id = Integer.parseInt(txtStudentId.getText());
+                Student s = getStudent(id);
+                if (s != null) {
+                    txtStudentName.setText(s.getName());
+                    txtCourse.setText(s.getCourse());
+                } else JOptionPane.showMessageDialog(this, "Student not found!");
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Enter valid Student ID!");
+            }
+        });
+
+        btnIssue.addActionListener(e -> {
+            try {
+                int bookId = Integer.parseInt(txtBookId.getText());
+                int studentId = Integer.parseInt(txtStudentId.getText());
+                Book b = getBook(bookId);
+                Student s = getStudent(studentId);
+                issueBook(b, s, LocalDate.now());
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(this, "Enter valid IDs!");
+            }
+        });
+
