@@ -149,141 +149,108 @@ public class Home extends javax.swing.JFrame {
 
 
         
-        jMenuBar1.add(jMenu2);
+       // Panel 2 (Other actions)
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Action"));
+        btnibook.setText("Issue Book");
+        btnrbook.setText("Return Book");
 
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(btnibook, 150, 150, 150)
+                .addGap(18)
+                .addComponent(btnrbook, 150, 150, 150)
+                .addContainerGap()
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel2Layout.createParallelGroup()
+                    .addComponent(btnibook, 50, 50, 50)
+                    .addComponent(btnrbook, 50, 50, 50))
+                .addContainerGap()
+        );
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addComponent(jPanel1)
+                .addComponent(jPanel2)
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createSequentialGroup()
+                .addComponent(jPanel1)
+                .addGap(20)
+                .addComponent(jPanel2)
+        );
+
+        jMenu1.setText("File");
+        milogout.setText("Logout");
+        milogout.addActionListener(evt -> System.out.println("Logout clicked"));
+        miexit.setText("Exit");
+        miexit.addActionListener(evt -> System.exit(0));
+        jMenu1.add(milogout);
+        jMenu1.add(miexit);
+        jMenuBar1.add(jMenu1);
         setJMenuBar(jMenuBar1);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
-                            .addComponent(jLabel2)
-                            .addComponent(jLabel3)
-                            .addComponent(jLabel4))
-                        .addContainerGap())))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel4))
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        getContentPane().setLayout(new BorderLayout());
+        getContentPane().add(jLabel1, BorderLayout.NORTH);
+        getContentPane().add(jPanel4, BorderLayout.CENTER);
 
-        setSize(new java.awt.Dimension(700, 605));
+        setSize(new java.awt.Dimension(600, 400));
         setLocationRelativeTo(null);
-    }// </editor-fold>//GEN-END:initComponents
-
-    private void milogoutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_milogoutActionPerformed
-        Login log = new Login();
-        log.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_milogoutActionPerformed
-
-    private void miexitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_miexitActionPerformed
-        System.exit(0);
-    }//GEN-LAST:event_miexitActionPerformed
-
-    private void btnnewbookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnewbookActionPerformed
-        NewBook ob = new NewBook();
-        ob.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnnewbookActionPerformed
-
-    private void btnstatisticsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnstatisticsActionPerformed
-        Statistics ob = new Statistics();
-        ob.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnstatisticsActionPerformed
-
-    private void btnnewstudentActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnnewstudentActionPerformed
-        Student ob = new Student();
-        ob.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnnewstudentActionPerformed
-
-    private void btnrbookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnrbookActionPerformed
-        Return ob = new Return();
-        ob.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnrbookActionPerformed
-
-    private void btnibookActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnibookActionPerformed
-        Issue ob = new Issue();
-        ob.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnibookActionPerformed
-
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Home.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Home().setVisible(true);
-            }
-        });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
+    // --------- BUTTON ACTIONS ---------------
+    private void btnnewbookActionPerformed() {
+        String title = JOptionPane.showInputDialog(this, "Enter Book Title:");
+        String author = JOptionPane.showInputDialog(this, "Enter Author:");
+        if (title != null && author != null && !title.isEmpty() && !author.isEmpty()) {
+            manager.addBook(title, author);
+            JOptionPane.showMessageDialog(this, "✅ Book Added Successfully!");
+        }
+    }
+
+    private void btnstatisticsActionPerformed() {
+        List<String> books = manager.getAllBooks();
+        if (books.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No books found in database!");
+        } else {
+            JOptionPane.showMessageDialog(this, "Books in Library:\n" + String.join("\n", books));
+        }
+    }
+
+    private void btnnewstudentActionPerformed() {
+        String user = JOptionPane.showInputDialog(this, "Enter username:");
+        String pass = JOptionPane.showInputDialog(this, "Enter password:");
+        if (manager.validateUser(user, pass)) {
+            JOptionPane.showMessageDialog(this, "✅ Login successful!");
+        } else {
+            JOptionPane.showMessageDialog(this, "❌ Invalid credentials!");
+        }
+    }
+
+    // ---------- MAIN ----------
+    public static void main(String args[]) {
+        SwingUtilities.invokeLater(() -> new Home().setVisible(true));
+    }
+
+    // ---------- VARIABLES ----------
     private javax.swing.JButton btnibook;
     private javax.swing.JButton btnnewbook;
     private javax.swing.JButton btnnewstudent;
     private javax.swing.JButton btnrbook;
     private javax.swing.JButton btnstatistics;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
     private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem miexit;
+    private javax.swing.JMenuItem milogout;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel4;
-    private javax.swing.JMenuItem miabout;
-    private javax.swing.JMenuItem miexit;
-    private javax.swing.JMenuItem milogout;
-    // End of variables declaration//GEN-END:variables
 }
