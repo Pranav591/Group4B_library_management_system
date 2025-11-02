@@ -86,54 +86,75 @@ class AccountDAO {
         return null;
     }
         );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel1)
-                    .addComponent(txtuname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnsearch))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtname, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(txtsques, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(txtanswer, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnretrive))
-                .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel5)
-                    .addComponent(txtpassword, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnback))
-                .addContainerGap())
-        );
+        
+public class ForgotPassword extends JFrame {
+    private JTextField txtUsername, txtName, txtQuestion, txtAnswer, txtPassword;
+    private final AccountDAO accountDAO = new AccountDAO();
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(38, 38, 38)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(40, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(29, 29, 29)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(44, Short.MAX_VALUE))
-        );
+    public ForgotPassword() {
+        setTitle("Forgot Password");
+        setSize(450, 350);
+        setLayout(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        setLocationRelativeTo(null);
+        initUI();
+    }
 
-        pack();
-    }// </editor-fold>//GEN-END:initComponents
+    private void initUI() {
+        JLabel lblUser = new JLabel("Username:");
+        lblUser.setBounds(30, 30, 100, 25);
+        add(lblUser);
+
+        txtUsername = new JTextField();
+        txtUsername.setBounds(150, 30, 150, 25);
+        add(txtUsername);
+
+        JButton btnSearch = new JButton("Search");
+        btnSearch.setBounds(320, 30, 80, 25);
+        add(btnSearch);
+
+        JLabel lblName = new JLabel("Name:");
+        lblName.setBounds(30, 70, 100, 25);
+        add(lblName);
+
+        txtName = new JTextField();
+        txtName.setBounds(150, 70, 150, 25);
+        txtName.setEditable(false);
+        add(txtName);
+
+        JLabel lblQ = new JLabel("Security Question:");
+        lblQ.setBounds(30, 110, 120, 25);
+        add(lblQ);
+
+        txtQuestion = new JTextField();
+        txtQuestion.setBounds(150, 110, 250, 25);
+        txtQuestion.setEditable(false);
+        add(txtQuestion);
+
+        JLabel lblAns = new JLabel("Answer:");
+        lblAns.setBounds(30, 150, 100, 25);
+        add(lblAns);
+
+        txtAnswer = new JTextField();
+        txtAnswer.setBounds(150, 150, 150, 25);
+        add(txtAnswer);
+
+        JButton btnRetrieve = new JButton("Retrieve");
+        btnRetrieve.setBounds(320, 150, 80, 25);
+        add(btnRetrieve);
+
+        JLabel lblPass = new JLabel("Password:");
+        lblPass.setBounds(30, 190, 100, 25);
+        add(lblPass);
+
+        txtPassword = new JTextField();
+        txtPassword.setBounds(150, 190, 150, 25);
+        txtPassword.setEditable(false);
+        add(txtPassword);
+
+        JButton btnBack = new JButton("Back");
+        btnBack.setBounds(150, 240, 80, 25);
+        add(btnBack);
 
     private void btnsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearchActionPerformed
         search();
