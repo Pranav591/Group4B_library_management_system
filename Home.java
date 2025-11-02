@@ -78,52 +78,77 @@ class LibraryManager {
     
         
 
-        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
-        jPanel4.setLayout(jPanel4Layout);
-        jPanel4Layout.setHorizontalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
+       // ------------------ [ MAIN GUI CLASS ] ------------------
+public class Home extends javax.swing.JFrame {
+    private LibraryManager manager;
+
+    public Home() {
+        initComponents();
+        Toolkit toolkit = getToolkit();
+        Dimension size = toolkit.getScreenSize();
+        setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
+
+        // Initialize the OOP backend
+        manager = new LibraryManager();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void initComponents() {
+
+        jLabel1 = new javax.swing.JLabel();
+        jPanel4 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        btnrbook = new javax.swing.JButton();
+        btnibook = new javax.swing.JButton();
+        jPanel1 = new javax.swing.JPanel();
+        btnstatistics = new javax.swing.JButton();
+        btnnewstudent = new javax.swing.JButton();
+        btnnewbook = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        miexit = new javax.swing.JMenuItem();
+        milogout = new javax.swing.JMenuItem();
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Library Management System - OOP + MySQL");
+
+        jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24));
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setText("Library Management System");
+
+        // Panel 1 (Operations)
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Operation"));
+        btnnewbook.setText("New Book");
+        btnnewbook.addActionListener(evt -> btnnewbookActionPerformed());
+        btnstatistics.setText("View Books");
+        btnstatistics.addActionListener(evt -> btnstatisticsActionPerformed());
+        btnnewstudent.setText("Login Test");
+        btnnewstudent.addActionListener(evt -> btnnewstudentActionPerformed());
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addGap(21, 21, 21))
+                .addComponent(btnnewbook, 150, 150, 150)
+                .addGap(18)
+                .addComponent(btnstatistics, 150, 150, 150)
+                .addGap(18)
+                .addComponent(btnnewstudent, 150, 150, 150)
+                .addContainerGap()
         );
-        jPanel4Layout.setVerticalGroup(
-            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel4Layout.createSequentialGroup()
-                .addGap(32, 32, 32)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(41, 41, 41)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(106, Short.MAX_VALUE))
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup()
+                    .addComponent(btnnewbook, 50, 50, 50)
+                    .addComponent(btnstatistics, 50, 50, 50)
+                    .addComponent(btnnewstudent, 50, 50, 50))
+                .addContainerGap()
         );
 
-        jMenu1.setText("File");
 
-        miexit.setText("Exit");
-        miexit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                miexitActionPerformed(evt);
-            }
-        });
-        jMenu1.add(miexit);
-
-        milogout.setText("Logout");
-        milogout.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                milogoutActionPerformed(evt);
-            }
-        });
-        jMenu1.add(milogout);
-
-        jMenuBar1.add(jMenu1);
-
-        jMenu2.setText("Edit");
-
-        miabout.setText("About");
-        jMenu2.add(miabout);
-
+        
         jMenuBar1.add(jMenu2);
 
         setJMenuBar(jMenuBar1);
