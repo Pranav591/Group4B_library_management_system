@@ -1,4 +1,4 @@
-package library_management;
+package library;
 
 import javax.swing.*;
 import java.awt.*;
