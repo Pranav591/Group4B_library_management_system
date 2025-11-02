@@ -156,106 +156,44 @@ public class ForgotPassword extends JFrame {
         btnBack.setBounds(150, 240, 80, 25);
         add(btnBack);
 
-    private void btnsearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnsearchActionPerformed
-        search();
-    }//GEN-LAST:event_btnsearchActionPerformed
-
-    private void btnretriveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnretriveActionPerformed
-        retrive();
-    }//GEN-LAST:event_btnretriveActionPerformed
-
-    private void btnbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnbackActionPerformed
-        Login lo = new Login();
-        lo.setVisible(true);
-        this.dispose();
-    }//GEN-LAST:event_btnbackActionPerformed
-
-    public void search(){
-        String a1= txtuname.getText();
-        String sql = "select * from account where username='"+a1+"'";
-        try {
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                txtname.setText(rs.getString(2));
-                txtsques.setText(rs.getString(4));
-                rs.close();
-                ps.close();
-            }else{
-                JOptionPane.showMessageDialog(null, "Incorrect Username");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        }
-    }
-    
-    public void retrive(){
-        String a1 = txtuname.getText();
-        String a2 = txtanswer.getText();
-        String sql = "select * from account where answer='"+a2+"'";
-        try {
-            ps = con.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if (rs.next()) {
-                txtpassword.setText(rs.getString(3));
-//                rs.close();
-//                ps.close();
-            }else{
-                JOptionPane.showMessageDialog(null, "Incorrect Username");
-            }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, e);
-        } 
-    } 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Forgot.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Forgot.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Forgot.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Forgot.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new Forgot().setVisible(true);
-            }
+    // Action Listeners
+        btnSearch.addActionListener(e -> searchUser());
+        btnRetrieve.addActionListener(e -> retrievePassword());
+        btnBack.addActionListener(e -> {
+            JOptionPane.showMessageDialog(this, "Back to Login Screen");
+            dispose();
         });
     }
 
-    // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnback;
-    private javax.swing.JButton btnretrive;
-    private javax.swing.JButton btnsearch;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
-    private javax.swing.JPanel jPanel1;
-    private javax.swing.JTextField txtanswer;
-    private javax.swing.JTextField txtname;
-    private javax.swing.JTextField txtpassword;
-    private javax.swing.JTextField txtsques;
-    private javax.swing.JTextField txtuname;
-    // End of variables declaration//GEN-END:variables
-}
+    private void searchUser() {
+        String username = txtUsername.getText().trim();
+        if (username.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Please enter username!");
+            return;
+        }
+
+        Account acc = accountDAO.findByUsername(username);
+        if (acc != null) {
+            txtName.setText(acc.getName());
+            txtQuestion.setText(acc.getSecurityQuestion());
+        } else {
+            JOptionPane.showMessageDialog(this, "User not found!");
+        }
+    }
+
+    private void retrievePassword() {
+        String username = txtUsername.getText().trim();
+        String answer = txtAnswer.getText().trim();
+
+        if (username.isEmpty() || answer.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Enter both Username and Answer!");
+            return;
+        }
+
+        String password = accountDAO.getPassword(username, answer);
+        if (password != null) {
+            txtPassword.setText(password);
+        } else {
+            JOptionPane.showMessageDialog(this, "Incorrect answer!");
+        }
+    }
