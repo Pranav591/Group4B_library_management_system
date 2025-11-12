@@ -10,12 +10,6 @@ import javax.swing.JOptionPane;
 
 /**
  * Signup Class – Handles user registration for the Library System.
- *
- * OOP Concepts Demonstrated:
- * 1. *Encapsulation* – Keeps data (connection, form fields) private.
- * 2. *Abstraction* – Hides database details inside DatabaseHelper and SQL queries.
- * 3. *Inheritance* – Extends JFrame to reuse window properties and behavior.
- * 4. *Polymorphism* – Button actions behave differently (Create / Back).
  */
 public class Signup extends JFrame {
 
@@ -25,8 +19,13 @@ public class Signup extends JFrame {
 
     // Constructor – initializes the form
     public Signup() {
-        initComponents(); // Abstraction: sets up GUI
-        con = DatabaseHelper.getConnection(); // Abstraction: hides DB details
+        initComponents();
+        con = DatabaseHelper.getConnection(); // initialize database connection
+
+        // Check if connection failed
+        if (con == null) {
+            JOptionPane.showMessageDialog(this, "❌ Database connection failed. Please check DatabaseHelper settings.");
+        }
 
         // Center window on screen
         Toolkit toolkit = getToolkit();
@@ -38,21 +37,27 @@ public class Signup extends JFrame {
      * Adds a new user to the database when "Create" button is clicked.
      */
     private void btnCreateActionPerformed(java.awt.event.ActionEvent evt) {
-        try {
-            String sql = "INSERT INTO account (username, name, password, security_ques, answer) VALUES (?,?,?,?,?)";
-            ps = con.prepareStatement(sql);
+        if (con == null) {
+            JOptionPane.showMessageDialog(this, "⚠️ Cannot create account — no database connection.");
+            return;
+        }
 
+        try {
+            // ✅ matches your `account` table structure
+            String sql = "INSERT INTO account (username, name, password, security_ques, answer) VALUES (?, ?, ?, ?, ?)";
+            ps = con.prepareStatement(sql);
             ps.setString(1, txtuname.getText());
             ps.setString(2, txtname.getText());
             ps.setString(3, new String(txtpassword.getPassword()));
             ps.setString(4, (String) cmbsqes.getSelectedItem());
             ps.setString(5, txtans.getText());
 
-            ps.execute();
+            ps.executeUpdate();
             JOptionPane.showMessageDialog(this, "✅ Account created successfully!");
             clearFields();
+
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "❌ Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "❌ Error adding account: " + e.getMessage());
         }
     }
 
@@ -81,8 +86,7 @@ public class Signup extends JFrame {
         java.awt.EventQueue.invokeLater(() -> new Signup().setVisible(true));
     }
 
-    // ------------------- GUI COMPONENTS (Encapsulation) -------------------
-
+    // ------------------- GUI COMPONENTS -------------------
     private javax.swing.JButton btnBack;
     private javax.swing.JButton btnCreate;
     private javax.swing.JComboBox<String> cmbsqes;
@@ -96,8 +100,6 @@ public class Signup extends JFrame {
     private javax.swing.JTextField txtname;
     private javax.swing.JPasswordField txtpassword;
     private javax.swing.JTextField txtuname;
-
-    // ------------------- Layout Design (auto-generated simplified) -------------------
 
     @SuppressWarnings("unchecked")
     private void initComponents() {
@@ -123,7 +125,8 @@ public class Signup extends JFrame {
                 "What is your mother tongue?",
                 "What is your nickname?",
                 "What is your first childhood friend?",
-                "What is your school name?"
+                "What is your school name?",
+                "What is your favorite color?"
             }
         ));
 
@@ -135,7 +138,6 @@ public class Signup extends JFrame {
 
         jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("New Account"));
 
-        // Basic layout using GroupLayout
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(layout);
         layout.setHorizontalGroup(
