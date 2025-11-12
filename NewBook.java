@@ -1,15 +1,22 @@
 package library;
 
-import DAO.DatabaseHelper;
 import java.awt.*;
 import java.sql.*;
 import java.util.Random;
 import javax.swing.*;
 
-
+/**
+ * NewBook Class – Adds a new book to the database.
+ * 
+ * OOP Concepts:
+ * 1. Encapsulation – private fields & methods
+ * 2. Abstraction – hides database logic
+ * 3. Inheritance – extends JFrame
+ * 4. Polymorphism – buttons trigger different actions
+ */
 public class NewBook extends JFrame {
 
-    // Encapsulation: variables hidden from outside
+    // Encapsulation: private members
     private Connection con;
     private PreparedStatement ps;
 
@@ -17,7 +24,7 @@ public class NewBook extends JFrame {
     private JComboBox<String> cmbEdition;
     private JButton btnAdd, btnBack;
 
-    // Constructor: initializes everything
+    // Constructor
     public NewBook() {
         super("Add New Book");
         con = DatabaseHelper.getConnection();
@@ -28,7 +35,7 @@ public class NewBook extends JFrame {
         setLocationRelativeTo(null);
     }
 
-    // Abstraction: UI creation is in a separate method
+    // Abstraction: UI setup
     private void initUI() {
         JLabel lbl1 = new JLabel("Book ID:");
         JLabel lbl2 = new JLabel("Name:");
@@ -64,40 +71,44 @@ public class NewBook extends JFrame {
         add(panel);
     }
 
-    // Encapsulation: generates a random Book ID
+    // Generate random Book ID
     private void generateBookID() {
         Random rand = new Random();
         txtBookID.setText(String.valueOf(rand.nextInt(1000)));
     }
 
-    // Abstraction: handles DB logic inside a method
+    // Database Insertion (Abstraction)
     private void addBook() {
+        if (txtName.getText().isEmpty() || txtPublisher.getText().isEmpty() || 
+            txtPrice.getText().isEmpty() || txtStock.getText().isEmpty()) {
+            JOptionPane.showMessageDialog(this, "⚠️ Please fill all fields!");
+            return;
+        }
+
         String sql = "INSERT INTO book (book_id, name, edition, publisher, price, stock) VALUES (?, ?, ?, ?, ?, ?)";
-        try {
-            ps = con.prepareStatement(sql);
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setString(1, txtBookID.getText());
             ps.setString(2, txtName.getText());
             ps.setString(3, (String) cmbEdition.getSelectedItem());
             ps.setString(4, txtPublisher.getText());
-            ps.setString(5, txtPrice.getText());
-            ps.setString(6, txtStock.getText());
+            ps.setInt(5, Integer.parseInt(txtPrice.getText()));
+            ps.setInt(6, Integer.parseInt(txtStock.getText()));
             ps.executeUpdate();
 
-            JOptionPane.showMessageDialog(this, "Book added successfully!");
+            JOptionPane.showMessageDialog(this, "✅ Book added successfully!");
             clearFields();
             generateBookID();
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "❌ Error: " + e.getMessage());
         }
     }
 
-    // Polymorphism: different button → different action
+    // Polymorphism: Button → action
     private void goBack() {
-        JOptionPane.showMessageDialog(this, "Back to Home (placeholder)");
+        new Home().setVisible(true);
         dispose();
     }
 
-    // Utility method to clear all text fields
     private void clearFields() {
         txtName.setText("");
         txtPublisher.setText("");
@@ -105,7 +116,6 @@ public class NewBook extends JFrame {
         txtStock.setText("");
     }
 
-    // Main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new NewBook().setVisible(true));
     }
