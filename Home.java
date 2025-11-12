@@ -6,11 +6,11 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.*;
 
-
+// ------------------ [ DATABASE CONNECTION CLASS ] ------------------
 class DBConnection {
-    private static final String URL = "jdbc:mysql://121.0.0.1:3306/librarydb";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/librarydb?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "root"; // change this
+    private static final String PASSWORD = "root"; // change if different
 
     private static Connection connection = null;
 
@@ -19,7 +19,7 @@ class DBConnection {
             try {
                 Class.forName("com.mysql.cj.jdbc.Driver");
                 connection = DriverManager.getConnection(URL, USER, PASSWORD);
-                System.out.println("✅ Connected to MySQL Database");
+                System.out.println("✅ Connected to MySQL Database: librarydb");
             } catch (Exception e) {
                 System.out.println("❌ Database Connection Failed: " + e.getMessage());
             }
@@ -27,58 +27,62 @@ class DBConnection {
         return connection;
     }
 }
-    // ------------------ [ DATA ACCESS CLASS (OOP) ] ------------------
+
+// ------------------ [ DATA ACCESS CLASS (OOP) ] ------------------
 class LibraryManager {
-    private Connection conn;
+    private final Connection conn;
 
     public LibraryManager() {
         conn = DBConnection.getConnection();
     }
 
-    // Add a new book
-    public void addBook(String title, String author) {
-        String query = "INSERT INTO books (title, author) VALUES (?, ?)";
+    // ✅ Add a new book (matches `book` table)
+    public void addBook(String name, String publisher, int edition, int price, int stock) {
+        String query = "INSERT INTO book (name, edition, publisher, price, stock) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setString(1, title);
-            ps.setString(2, author);
+            ps.setString(1, name);
+            ps.setInt(2, edition);
+            ps.setString(3, publisher);
+            ps.setInt(4, price);
+            ps.setInt(5, stock);
             ps.executeUpdate();
             System.out.println("✅ Book Added Successfully");
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "❌ Error adding book: " + e.getMessage());
         }
     }
 
-    // Get all book titles
+    // ✅ Get all book names
     public List<String> getAllBooks() {
         List<String> books = new ArrayList<>();
-        String query = "SELECT title FROM books";
+        String query = "SELECT name FROM book";
         try (PreparedStatement ps = conn.prepareStatement(query);
-            ResultSet rs = ps.executeQuery()) {
+             ResultSet rs = ps.executeQuery()) {
             while (rs.next()) {
-                books.add(rs.getString("title"));
+                books.add(rs.getString("name"));
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "❌ Error fetching books: " + e.getMessage());
         }
         return books;
     }
 
-    // Validate user login
+    // ✅ Validate user login (matches `account` table)
     public boolean validateUser(String username, String password) {
-        String query = "SELECT * FROM users WHERE username = ? AND password = ?";
+        String query = "SELECT * FROM account WHERE username = ? AND password = ?";
         try (PreparedStatement ps = conn.prepareStatement(query)) {
             ps.setString(1, username);
             ps.setString(2, password);
             ResultSet rs = ps.executeQuery();
             return rs.next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "❌ Error validating user: " + e.getMessage());
             return false;
-        }
-    
-        
+        }
+    }
+}
 
-       // ------------------ [ MAIN GUI CLASS ] ------------------
+// ------------------ [ MAIN GUI CLASS ] ------------------
 public class Home extends javax.swing.JFrame {
     private LibraryManager manager;
 
@@ -87,8 +91,6 @@ public class Home extends javax.swing.JFrame {
         Toolkit toolkit = getToolkit();
         Dimension size = toolkit.getScreenSize();
         setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
-
-        // Initialize the OOP backend
         manager = new LibraryManager();
     }
 
@@ -110,15 +112,15 @@ public class Home extends javax.swing.JFrame {
         milogout = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setTitle("Library Management System - OOP + MySQL");
+        setTitle("Library Management System - MySQL Integration");
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 24));
         jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         jLabel1.setText("Library Management System");
 
         // Panel 1 (Operations)
-        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Operation"));
-        btnnewbook.setText("New Book");
+        jPanel1.setBorder(javax.swing.BorderFactory.createTitledBorder("Operations"));
+        btnnewbook.setText("Add Book");
         btnnewbook.addActionListener(evt -> btnnewbookActionPerformed());
         btnstatistics.setText("View Books");
         btnstatistics.addActionListener(evt -> btnstatisticsActionPerformed());
@@ -147,10 +149,8 @@ public class Home extends javax.swing.JFrame {
                 .addContainerGap()
         );
 
-
-        
-       // Panel 2 (Other actions)
-        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Action"));
+        // Panel 2 (Other actions)
+        jPanel2.setBorder(javax.swing.BorderFactory.createTitledBorder("Actions"));
         btnibook.setText("Issue Book");
         btnrbook.setText("Return Book");
 
@@ -207,11 +207,19 @@ public class Home extends javax.swing.JFrame {
 
     // --------- BUTTON ACTIONS ---------------
     private void btnnewbookActionPerformed() {
-        String title = JOptionPane.showInputDialog(this, "Enter Book Title:");
-        String author = JOptionPane.showInputDialog(this, "Enter Author:");
-        if (title != null && author != null && !title.isEmpty() && !author.isEmpty()) {
-            manager.addBook(title, author);
-            JOptionPane.showMessageDialog(this, "✅ Book Added Successfully!");
+        try {
+            String title = JOptionPane.showInputDialog(this, "Enter Book Name:");
+            String publisher = JOptionPane.showInputDialog(this, "Enter Publisher:");
+            int edition = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Edition:"));
+            int price = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Price:"));
+            int stock = Integer.parseInt(JOptionPane.showInputDialog(this, "Enter Stock:"));
+
+            if (title != null && publisher != null && !title.isEmpty() && !publisher.isEmpty()) {
+                manager.addBook(title, publisher, edition, price, stock);
+                JOptionPane.showMessageDialog(this, "✅ Book Added Successfully!");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "❌ Invalid input or database error: " + e.getMessage());
         }
     }
 
