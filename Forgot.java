@@ -1,55 +1,50 @@
-    package library;
+package library;
 
-    import java.sql.*;
-    import javax.swing.*;
-// model class (Encapsulation for acc details)
+import java.sql.*;
+import javax.swing.*;
 
-    class Account {
-        private String username;
-        private String name;
-        private String securityQuestion;
-        private String answer;
-        private String password;
+// ------------------------------------------------------------
+// Model Class (Encapsulation for account details)
+// ------------------------------------------------------------
+class Account {
+    private String username;
+    private String name;
+    private String securityQuestion;
+    private String answer;
+    private String password;
 
-        public Account() {}
+    public Account() {}
 
-        public Account(String username, String name, String securityQuestions, String answer, String password) {
-            this.username = username;
-            this.name = name;
-            this.securityQuestion = securityQuestion;
-            this.answer = answer;
-            this.password = password;
-        }
+    public Account(String username, String name, String securityQuestion, String answer, String password) {
+        this.username = username;
+        this.name = name;
+        this.securityQuestion = securityQuestion;
+        this.answer = answer;
+        this.password = password;
+    }
 
-        public string getUsername() {
-            return username;
-        }
-        public String getName() {
-            return name;
-        }
-        public String getSecurityQuestion() {
-            return securityQuestion;
-        }
-        public String getAnswer() {
-            return answer;
-        }
-        public String getPassword() { 
-            return password; 
-        }
+    public String getUsername() { return username; }
+    public String getName() { return name; }
+    public String getSecurityQuestion() { return securityQuestion; }
+    public String getAnswer() { return answer; }
+    public String getPassword() { return password; }
 }
-    // Database Helper (for connecting to MySQL)
+
+// ------------------------------------------------------------
+// Database Helper (for connecting to MySQL)
 // ------------------------------------------------------------
 class DatabaseHelper {
-    private static final String URL = "jdbc:mysql://127.0.0.1:3306/librarydb";
+    private static final String URL = "jdbc:mysql://127.0.0.1:3306/librarydb?useSSL=false&serverTimezone=UTC";
     private static final String USER = "root";
-    private static final String PASSWORD = "";
+    private static final String PASSWORD = "root"; // <-- change if needed
 
     public static Connection getConnection() {
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
-            return DriverManager.getConnection(URL, USER, PASSWORD);
+            Connection con = DriverManager.getConnection(URL, USER, PASSWORD);
+            return con;
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "❌ Database connection failed: " + e.getMessage());
             return null;
         }
     }
@@ -67,6 +62,7 @@ class AccountDAO {
 
     // Find user by username
     public Account findByUsername(String username) {
+        if (con == null) return null;
         String query = "SELECT * FROM account WHERE username = ?";
         try (PreparedStatement ps = con.prepareStatement(query)) {
             ps.setString(1, username);
@@ -75,24 +71,44 @@ class AccountDAO {
                 return new Account(
                         rs.getString("username"),
                         rs.getString("name"),
-                        rs.getString("security_question"),
+                        rs.getString("security_ques"), // ✅ corrected column name
                         rs.getString("answer"),
                         rs.getString("password")
                 );
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "⚠️ Error searching user: " + e.getMessage());
         }
-        return null;
-    }
-        );
-        
+        return null;
+    }
+
+    // Get password if answer is correct
+    public String getPassword(String username, String answer) {
+        if (con == null) return null;
+        String query = "SELECT password FROM account WHERE username = ? AND answer = ?";
+        try (PreparedStatement ps = con.prepareStatement(query)) {
+            ps.setString(1, username);
+            ps.setString(2, answer);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("password");
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "⚠️ Error retrieving password: " + e.getMessage());
+        }
+        return null;
+    }
+}
+
+// ------------------------------------------------------------
+// Main UI Class (Forgot Password Screen)
+// ------------------------------------------------------------
 public class ForgotPassword extends JFrame {
     private JTextField txtUsername, txtName, txtQuestion, txtAnswer, txtPassword;
     private final AccountDAO accountDAO = new AccountDAO();
 
     public ForgotPassword() {
-        setTitle("Forgot Password");
+        setTitle("🔑 Forgot Password");
         setSize(450, 350);
         setLayout(null);
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -110,7 +126,7 @@ public class ForgotPassword extends JFrame {
         add(txtUsername);
 
         JButton btnSearch = new JButton("Search");
-        btnSearch.setBounds(320, 30, 80, 25);
+        btnSearch.setBounds(320, 30, 90, 25);
         add(btnSearch);
 
         JLabel lblName = new JLabel("Name:");
@@ -123,7 +139,7 @@ public class ForgotPassword extends JFrame {
         add(txtName);
 
         JLabel lblQ = new JLabel("Security Question:");
-        lblQ.setBounds(30, 110, 120, 25);
+        lblQ.setBounds(30, 110, 130, 25);
         add(lblQ);
 
         txtQuestion = new JTextField();
@@ -140,7 +156,7 @@ public class ForgotPassword extends JFrame {
         add(txtAnswer);
 
         JButton btnRetrieve = new JButton("Retrieve");
-        btnRetrieve.setBounds(320, 150, 80, 25);
+        btnRetrieve.setBounds(320, 150, 90, 25);
         add(btnRetrieve);
 
         JLabel lblPass = new JLabel("Password:");
@@ -153,14 +169,14 @@ public class ForgotPassword extends JFrame {
         add(txtPassword);
 
         JButton btnBack = new JButton("Back");
-        btnBack.setBounds(150, 240, 80, 25);
+        btnBack.setBounds(150, 240, 100, 25);
         add(btnBack);
 
-    // Action Listeners
+        // Action Listeners
         btnSearch.addActionListener(e -> searchUser());
         btnRetrieve.addActionListener(e -> retrievePassword());
         btnBack.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Back to Login Screen");
+            JOptionPane.showMessageDialog(this, "Returning to Login Screen...");
             dispose();
         });
     }
@@ -168,7 +184,7 @@ public class ForgotPassword extends JFrame {
     private void searchUser() {
         String username = txtUsername.getText().trim();
         if (username.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Please enter username!");
+            JOptionPane.showMessageDialog(this, "⚠️ Please enter username!");
             return;
         }
 
@@ -177,7 +193,7 @@ public class ForgotPassword extends JFrame {
             txtName.setText(acc.getName());
             txtQuestion.setText(acc.getSecurityQuestion());
         } else {
-            JOptionPane.showMessageDialog(this, "User not found!");
+            JOptionPane.showMessageDialog(this, "❌ User not found!");
         }
     }
 
@@ -186,7 +202,7 @@ public class ForgotPassword extends JFrame {
         String answer = txtAnswer.getText().trim();
 
         if (username.isEmpty() || answer.isEmpty()) {
-            JOptionPane.showMessageDialog(this, "Enter both Username and Answer!");
+            JOptionPane.showMessageDialog(this, "⚠️ Enter both Username and Answer!");
             return;
         }
 
@@ -194,6 +210,11 @@ public class ForgotPassword extends JFrame {
         if (password != null) {
             txtPassword.setText(password);
         } else {
-            JOptionPane.showMessageDialog(this, "Incorrect answer!");
+            JOptionPane.showMessageDialog(this, "❌ Incorrect answer!");
         }
     }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new ForgotPassword().setVisible(true));
+    }
+}
