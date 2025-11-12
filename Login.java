@@ -1,11 +1,8 @@
 package library;
 
-import DAO.DatabaseHelper;
-import javax.swing.*;
 import java.awt.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
+import java.sql.*;
+import javax.swing.*;
 
 /**
  * Login screen for Library Management System.
@@ -37,13 +34,20 @@ public class Login extends JFrame {
         btnForgot = new JButton("Forgot Password");
 
         btnLogin.addActionListener(e -> handleLogin());
-        btnSignup.addActionListener(e -> JOptionPane.showMessageDialog(this, "Signup form not implemented yet."));
-        btnForgot.addActionListener(e -> JOptionPane.showMessageDialog(this, "Forgot password form not implemented yet."));
+        btnSignup.addActionListener(e -> {
+            new Signup().setVisible(true);
+            dispose();
+        });
+        btnForgot.addActionListener(e -> {
+            new ForgotPassword().setVisible(true);
+            dispose();
+        });
 
         JPanel panel = new JPanel(new GridBagLayout());
         panel.setBorder(BorderFactory.createTitledBorder("User Login"));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(5, 5, 5, 5);
+
         gbc.gridx = 0; gbc.gridy = 0; panel.add(lblUser, gbc);
         gbc.gridx = 1; panel.add(txtUsername, gbc);
         gbc.gridx = 0; gbc.gridy = 1; panel.add(lblPass, gbc);
@@ -61,7 +65,7 @@ public class Login extends JFrame {
 
     // Handle Login Logic
     private void handleLogin() {
-        String sql = "SELECT * FROM users WHERE username=? AND password=?";
+        String sql = "SELECT * FROM account WHERE username=? AND password=?"; // ✅ fixed table name
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, txtUsername.getText().trim());
             ps.setString(2, new String(txtPassword.getPassword()).trim());
@@ -70,17 +74,17 @@ public class Login extends JFrame {
             if (rs.next()) {
                 JOptionPane.showMessageDialog(this, "✅ Login Successful!");
                 dispose();
-                new Loading().startLoading(); // Opens loading screen
+                new Home().setVisible(true); // ✅ Open Home window
             } else {
                 JOptionPane.showMessageDialog(this, "❌ Invalid username or password!");
             }
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "⚠️ Error: " + e.getMessage());
         }
     }
 
     // Main method
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new Login().setVisible(true));
-    }
+    }
 }
