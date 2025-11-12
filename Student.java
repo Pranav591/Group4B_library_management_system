@@ -1,135 +1,134 @@
 package library;
 
-import javax.swing.*;
 import java.awt.*;
 import java.sql.*;
-import java.util.Random;
+import javax.swing.*;
 
 /**
- * Simple Student Registration Form
- * ------------------------------------
- * Basic OOP concepts used:
- * - Encapsulation: data kept private inside the class
- * - Abstraction: database code hidden in helper method
- * - Object Creation: student is created and saved via method
+ * GUI-based Student Registration
+ * -------------------------------
+ * Demonstrates:
+ *  - Encapsulation: private fields & methods
+ *  - Abstraction: hides DB logic
+ *  - Inheritance: extends JFrame
  */
 public class Student extends JFrame {
 
-    // --- Encapsulated GUI components ---
-    private JTextField txtId, txtName, txtFather, txtBranch;
-    private JComboBox<String> cmbCourse, cmbYear, cmbSemester;
-    private JButton btnRegister, btnBack;
+    // --- UI Components (Encapsulation) ---
+    private JTextField txtName, txtFather, txtCourse, txtBranch, txtYear, txtSemester;
+    private JButton btnRegister, btnClear, btnExit;
 
-    // --- Database connection ---
-    private Connection con;
+    // --- Database Configuration ---
+    private static final String URL = "jdbc:mysql://localhost:3306/librarydb";
+    private static final String USER = "root";
+    private static final String PASSWORD = "root"; // <-- change to your MySQL password
 
-    // --- Constructor ---
     public Student() {
-        super("Student Registration");
+        setTitle("📘 Student Registration");
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setSize(400, 400);
+        setLayout(new GridLayout(8, 2, 10, 10));
+        setResizable(false);
 
-        // Abstraction: connect to DB (you can replace details)
-        connectDatabase();
+        // Center window on screen
+        Toolkit toolkit = getToolkit();
+        Dimension size = toolkit.getScreenSize();
+        setLocation(size.width / 2 - getWidth() / 2, size.height / 2 - getHeight() / 2);
 
-        // Initialize GUI
-        initComponents();
+        // --- UI Fields ---
+        add(new JLabel("Student Name:"));
+        txtName = new JTextField();
+        add(txtName);
 
-        // Center window
-        setLocationRelativeTo(null);
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
+        add(new JLabel("Father's Name:"));
+        txtFather = new JTextField();
+        add(txtFather);
+
+        add(new JLabel("Course:"));
+        txtCourse = new JTextField();
+        add(txtCourse);
+
+        add(new JLabel("Branch:"));
+        txtBranch = new JTextField();
+        add(txtBranch);
+
+        add(new JLabel("Year:"));
+        txtYear = new JTextField();
+        add(txtYear);
+
+        add(new JLabel("Semester:"));
+        txtSemester = new JTextField();
+        add(txtSemester);
+
+        // --- Buttons ---
+        btnRegister = new JButton("✅ Register");
+        btnClear = new JButton("🧹 Clear");
+        btnExit = new JButton("🚪 Exit");
+
+        add(btnRegister);
+        add(btnClear);
+        add(btnExit);
+
+        // --- Button Actions ---
+        btnRegister.addActionListener(e -> registerStudent());
+        btnClear.addActionListener(e -> clearFields());
+        btnExit.addActionListener(e -> System.exit(0));
+
+        setVisible(true);
     }
 
-    // --- Database connection (Abstraction) ---
-    private void connectDatabase() {
-        try {
-            con = DriverManager.getConnection("jdbc:mysql://localhost:3306/library", "root", "");
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Database Connection Failed!");
-        }
-    }
-
-    // --- Generate random student ID (Abstraction) ---
-    private void generateRandomID() {
-        txtId.setText(String.valueOf(new Random().nextInt(1000) + 1));
-    }
-
-    // --- Register new student (Encapsulation + Abstraction) ---
+    // ----------------- REGISTER STUDENT -----------------
     private void registerStudent() {
-        String sql = "INSERT INTO student (student_id, name, fathers_name, course, branch, year, semister) VALUES (?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement ps = con.prepareStatement(sql)) {
-            ps.setString(1, txtId.getText());
-            ps.setString(2, txtName.getText());
-            ps.setString(3, txtFather.getText());
-            ps.setString(4, (String) cmbCourse.getSelectedItem());
-            ps.setString(5, txtBranch.getText());
-            ps.setString(6, (String) cmbYear.getSelectedItem());
-            ps.setString(7, (String) cmbSemester.getSelectedItem());
-            ps.executeUpdate();
+        String name = txtName.getText().trim();
+        String father = txtFather.getText().trim();
+        String course = txtCourse.getText().trim();
+        String branch = txtBranch.getText().trim();
+        String year = txtYear.getText().trim();
+        String semester = txtSemester.getText().trim();
 
-            JOptionPane.showMessageDialog(this, "Student Registered Successfully!");
-            clearFields();
-            generateRandomID();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Error: " + e.getMessage());
+        // Validation
+        if (name.isEmpty() || father.isEmpty() || course.isEmpty() ||
+            branch.isEmpty() || year.isEmpty() || semester.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "⚠️ Please fill in all fields!");
+            return;
+        }
+
+        // DB Insertion
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            try (Connection con = DriverManager.getConnection(URL, USER, PASSWORD)) {
+                String sql = "INSERT INTO student (name, fathers_name, course, branch, year, semister) VALUES (?, ?, ?, ?, ?, ?)";
+                try (PreparedStatement ps = con.prepareStatement(sql)) {
+                    ps.setString(1, name);
+                    ps.setString(2, father);
+                    ps.setString(3, course);
+                    ps.setString(4, branch);
+                    ps.setString(5, year);
+                    ps.setString(6, semester);
+                    ps.executeUpdate();
+                }
+                JOptionPane.showMessageDialog(this, "✅ Student registered successfully!");
+                clearFields();
+            }
+        } catch (ClassNotFoundException e) {
+            JOptionPane.showMessageDialog(this, "❌ JDBC Driver not found!");
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "❌ Database error: " + e.getMessage());
         }
     }
 
-    // --- Reset input fields ---
+    // ----------------- CLEAR FIELDS -----------------
     private void clearFields() {
         txtName.setText("");
         txtFather.setText("");
+        txtCourse.setText("");
         txtBranch.setText("");
-        cmbCourse.setSelectedIndex(0);
-        cmbYear.setSelectedIndex(0);
-        cmbSemester.setSelectedIndex(0);
+        txtYear.setText("");
+        txtSemester.setText("");
     }
 
-    // --- GUI Setup (Simple and clear) ---
-    private void initComponents() {
-        JLabel lblId = new JLabel("Student ID:");
-        JLabel lblName = new JLabel("Name:");
-        JLabel lblFather = new JLabel("Father's Name:");
-        JLabel lblCourse = new JLabel("Course:");
-        JLabel lblBranch = new JLabel("Branch:");
-        JLabel lblYear = new JLabel("Year:");
-        JLabel lblSemester = new JLabel("Semester:");
-
-        txtId = new JTextField(10);
-        txtId.setEditable(false);
-        txtName = new JTextField(10);
-        txtFather = new JTextField(10);
-        txtBranch = new JTextField(10);
-
-        cmbCourse = new JComboBox<>(new String[]{"BSc", "BBA", "BA"});
-        cmbYear = new JComboBox<>(new String[]{"1st", "2nd", "3rd"});
-        cmbSemester = new JComboBox<>(new String[]{"1st", "2nd", "3rd", "4th"});
-
-        btnRegister = new JButton("Register");
-        btnBack = new JButton("Back");
-
-        btnRegister.addActionListener(e -> registerStudent());
-        btnBack.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Back to Home");
-            dispose();
-        });
-
-        JPanel panel = new JPanel(new GridLayout(8, 2, 5, 5));
-        panel.setBorder(BorderFactory.createTitledBorder("New Student"));
-        panel.add(lblId); panel.add(txtId);
-        panel.add(lblName); panel.add(txtName);
-        panel.add(lblFather); panel.add(txtFather);
-        panel.add(lblCourse); panel.add(cmbCourse);
-        panel.add(lblBranch); panel.add(txtBranch);
-        panel.add(lblYear); panel.add(cmbYear);
-        panel.add(lblSemester); panel.add(cmbSemester);
-        panel.add(btnRegister); panel.add(btnBack);
-
-        add(panel);
-        pack();
-        generateRandomID();
-    }
-
-    // --- Main method ---
+    // ----------------- MAIN METHOD -----------------
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new Student().setVisible(true));
+        SwingUtilities.invokeLater(Student::new);
     }
 }
