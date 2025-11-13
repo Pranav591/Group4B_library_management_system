@@ -50,7 +50,7 @@ A desktop-based **Java + MySQL** Library Management System designed to handle bo
 
 👥 Contributors
 
-Patel Nishitkumar
-Pranav Adhikari
-Pragun Lal Shrestha
-Unique Bhakta Shrestha
+Patel Nishitkumar,
+Pranav Adhikari,
+Pragun Lal Shrestha,
+Unique Bhakta Shrestha.
